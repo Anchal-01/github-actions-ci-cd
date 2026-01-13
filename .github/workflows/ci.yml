@@ -1,4 +1,4 @@
-name: CI Pipeline using GitHub Actions
+name: CI Pipeline
 
 on:
   push:
@@ -6,17 +6,25 @@ on:
       - main
 
 jobs:
-  build:
+  ci:
     runs-on: ubuntu-latest
 
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
 
-      - name: Run shell script
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+
+      - name: Install dependencies
         run: |
-          echo "Running CI pipeline"
-          uname -a
+          pip install -r requirements.txt
+
+      - name: Run unit tests
+        run: |
+          pytest
 
       - name: Build Docker image
         run: docker build -t demo-app:latest .
